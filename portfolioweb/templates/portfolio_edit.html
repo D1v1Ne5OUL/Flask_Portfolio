@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование портфолио</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #667eea;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .editor-panel, .preview-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .project-item, .skill-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+        }
+        .project-item input, .skill-item input {
+            flex: 1;
+        }
+        .remove-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .add-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .save-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        .preview-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .preview-card h3 {
+            margin-bottom: 12px;
+            color: #667eea;
+        }
+        .preview-projects span, .preview-skills span {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin: 4px;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>✏️ Редактор портфолио</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a href="{{ url_for('view_my_portfolio') }}">Моё портфолио</a>
+            <a href="{{ url_for('account') }}">Аккаунт</a>
+            <a href="{{ url_for('logout') }}">Выход</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="editor-panel">
+            <form method="POST" id="portfolioForm">
+                <div class="form-group">
+                    <label>ФИО</label>
+                    <input type="text" name="full_name" value="{{ portfolio.full_name or '' }}" id="full_name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Аватар (текст/эмодзи)</label>
+                    <input type="text" name="avatar" value="{{ portfolio.avatar or '👤' }}" id="avatar">
+                </div>
+                
+                <div class="form-group">
+                    <label>Краткая информация</label>
+                    <textarea name="short_info" id="short_info">{{ portfolio.short_info or '' }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Развернутая информация</label>
+                    <textarea name="detailed_info" id="detailed_info">{{ portfolio.detailed_info or '' }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Проекты</label>
+                    <div id="projects-container">
+                        {% set projects = portfolio.projects|from_json %}
+                        {% for project in projects %}
+                        <div class="project-item">
+                            <input type="text" name="projects[]" value="{{ project }}">
+                            <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="add-btn" onclick="addProject()">+ Добавить проект</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Навыки</label>
+                    <div id="skills-container">
+                        {% set skills = portfolio.skills|from_json %}
+                        {% for skill in skills %}
+                        <div class="skill-item">
+                            <input type="text" name="skills[]" value="{{ skill }}">
+                            <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="add-btn" onclick="addSkill()">+ Добавить навык</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Социальные сети</label>
+                    {% set social = portfolio.social_links|from_json_dict %}
+                    <input type="text" name="github" placeholder="GitHub" value="{{ social.github or '' }}" style="margin-bottom: 8px;">
+                    <input type="text" name="linkedin" placeholder="LinkedIn" value="{{ social.linkedin or '' }}" style="margin-bottom: 8px;">
+                    <input type="text" name="telegram" placeholder="Telegram" value="{{ social.telegram or '' }}">
+                </div>
+                
+                <button type="submit" class="save-btn">💾 Сохранить портфолио</button>
+            </form>
+        </div>
+        
+        <div class="preview-panel">
+            <h2>👁️ Предпросмотр</h2>
+            <div class="preview-card">
+                <div class="avatar-preview" id="previewAvatar">👤</div>
+                <h3 id="previewName">Имя пользователя</h3>
+                <div id="previewShortInfo">Краткая информация</div>
+            </div>
+            <div class="preview-card">
+                <h3>📋 Развернутая информация</h3>
+                <div id="previewDetailedInfo">Развернутая информация</div>
+            </div>
+            <div class="preview-card">
+                <h3>🚀 Проекты</h3>
+                <div id="previewProjects" class="preview-projects"></div>
+            </div>
+            <div class="preview-card">
+                <h3>⚡ Навыки</h3>
+                <div id="previewSkills" class="preview-skills"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addProject() {
+            const container = document.getElementById('projects-container');
+            const div = document.createElement('div');
+            div.className = 'project-item';
+            div.innerHTML = '<input type="text" name="projects[]" placeholder="Название проекта"><button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>';
+            container.appendChild(div);
+        }
+        
+        function addSkill() {
+            const container = document.getElementById('skills-container');
+            const div = document.createElement('div');
+            div.className = 'skill-item';
+            div.innerHTML = '<input type="text" name="skills[]" placeholder="Навык"><button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>';
+            container.appendChild(div);
+        }
+        
+        function updatePreview() {
+            document.getElementById('previewAvatar').innerText = document.getElementById('avatar').value || '👤';
+            document.getElementById('previewName').innerText = document.getElementById('full_name').value || 'Имя пользователя';
+            document.getElementById('previewShortInfo').innerText = document.getElementById('short_info').value || 'Краткая информация';
+            document.getElementById('previewDetailedInfo').innerText = document.getElementById('detailed_info').value || 'Развернутая информация';
+            
+            const projects = Array.from(document.querySelectorAll('[name="projects[]"]')).map(i => i.value).filter(v => v);
+            document.getElementById('previewProjects').innerHTML = projects.map(p => `<span>📌 ${p}</span>`).join('') || '<span>Нет проектов</span>';
+            
+            const skills = Array.from(document.querySelectorAll('[name="skills[]"]')).map(i => i.value).filter(v => v);
+            document.getElementById('previewSkills').innerHTML = skills.map(s => `<span>⚡ ${s}</span>`).join('') || '<span>Нет навыков</span>';
+        }
+        
+        document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updatePreview));
+        updatePreview();
+    </script>
+</body>
+</html>

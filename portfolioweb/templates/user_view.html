@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио пользователя</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #667eea;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+        .avatar {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+        .profile-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        .profile-body {
+            padding: 30px;
+        }
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .info-section h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        .projects-grid {
+            display: grid;
+            gap: 10px;
+        }
+        .project-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skill-item {
+            background: #667eea;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ccc;
+            color: #333;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; text-align: center; }
+            .nav-links a { margin: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>👤 Портфолио пользователя</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a href="{{ url_for('edit_portfolio') }}">Моё портфолио</a>
+            <a href="{{ url_for('logout') }}">Выход</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="avatar">{{ portfolio.avatar or '👤' }}</div>
+                <h1>{{ portfolio.full_name or 'Пользователь' }}</h1>
+            </div>
+            <div class="profile-body">
+                <div class="info-section">
+                    <h3>📝 Краткая информация</h3>
+                    <p>{{ portfolio.short_info or 'Не указано' }}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>📖 Развернутая информация</h3>
+                    <p>{{ portfolio.detailed_info or 'Не указано' }}</p>
+                </div>
+                
+                <div class="info-section">
+                    <h3>🚀 Проекты</h3>
+                    <div class="projects-grid">
+                        {% set projects = portfolio.projects|from_json %}
+                        {% for project in projects %}
+                        <div class="project-item">📌 {{ project }}</div>
+                        {% else %}
+                        <p style="color: #888;">Нет добавленных проектов</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>⚡ Навыки</h3>
+                    <div class="skills-list">
+                        {% set skills = portfolio.skills|from_json %}
+                        {% for skill in skills %}
+                        <span class="skill-item">{{ skill }}</span>
+                        {% else %}
+                        <p style="color: #888;">Нет добавленных навыков</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <a href="{{ url_for('index') }}" class="back-btn">← Назад к списку</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио | Лендинг работ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #2d3748;
+        }
+
+        /* Шапка */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Вкладки */
+        .tabs-container {
+            max-width: 1200px;
+            margin: -30px auto 0;
+            padding: 0 20px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: white;
+            border-radius: 60px;
+            padding: 6px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #4a5568;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Контент вкладок */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Общие стили */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* ========== ВКЛАДКА 1: ЛИЧНОЕ ПОРТФОЛИО ========== */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            flex-wrap: wrap;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            color: white;
+        }
+
+        .profile-info h2 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .profile-info .role {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .profile-info .bio {
+            color: #4a5568;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+        }
+
+        /* Сетка проектов */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        .project-info {
+            padding: 20px;
+        }
+
+        .project-info h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .project-info p {
+            color: #718096;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tag {
+            background: #edf2f7;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .project-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .project-link:hover {
+            gap: 8px;
+        }
+
+        /* Навыки */
+        .skills {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .skill-item {
+            background: #edf2f7;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+        }
+
+        /* ========== ВКЛАДКА 2: ЛЕНДИНГ ПОРТФОЛИО ========== */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            color: white;
+            margin-bottom: 48px;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-bar {
+            max-width: 500px;
+            margin: 30px auto 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 14px 28px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background: #16213e;
+            transform: scale(0.98);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .portfolio-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 15px;
+        }
+
+        .user-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .user-profession {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .user-bio {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .user-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .user-skills span {
+            background: #edf2f7;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #4a5568;
+        }
+
+        .user-stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .user-stat {
+            text-align: center;
+        }
+
+        .user-stat-value {
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .user-stat-label {
+            font-size: 11px;
+            color: #a0aec0;
+        }
+
+        .view-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #edf2f7;
+            color: #4a5568;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Футер */
+        .footer {
+            background: #1a1a2e;
+            color: #a0aec0;
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+            
+            .hero h2 {
+                font-size: 28px;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .projects-grid, .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Творческое портфолио</h1>
+        <p>Дизайн, разработка и вдохновение — в одном месте</p>
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="my">📁 Моё портфолио</button>
+            <button class="tab-btn" data-tab="all">🌍 Портфолио сообщества</button>
+        </div>
+    </div>
+
+    <!-- Вкладка 1: Личное портфолио -->
+    <div id="my-portfolio" class="tab-content active">
+        <div class="container">
+            <div class="profile-header">
+                <div class="avatar">👨‍🎨</div>
+                <div class="profile-info">
+                    <h2>Алексей Соколов</h2>
+                    <div class="role">Senior UI/UX Designer & Frontend Developer</div>
+                    <div class="bio">Создаю красивые и функциональные интерфейсы уже 8 лет. Специализируюсь на современных веб-технологиях и пользовательском опыте.</div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-number">45+</div>
+                            <div class="stat-label">Проектов</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Клиентов</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">5 лет</div>
+                            <div class="stat-label">Опыта</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">📌 Избранные проекты</div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">🎯</div>
+                    <div class="project-info">
+                        <h3>AI Ассистент для бизнеса</h3>
+                        <p>Платформа для автоматизации бизнес-процессов с использованием искусственного интеллекта.</p>
+                        <div class="project-tags">
+                            <span class="tag">React</span>
+                            <span class="tag">Node.js</span>
+                            <span class="tag">AI</span>
+                        </div>
+                        <a href="#" class="project-link">Подробнее →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">🛍️</div>
+                    <div class="project-info">
+                        <h3>E-commerce платформа</h3>
+                        <p>Современный интернет-магазин с системой рекомендаций и удобной корзиной.</p>
+                        <div class="project-tags">
+                            <span class="tag">Next.js</span>
+                            <span class="tag">Tailwind</span>
+                            <span class="tag">Stripe</span>
+                        </div>
+                        <a href="#" class="project-link">Подробнее →</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image">📱</div>
+                    <div class="project-info">
+                        <h3>Мобильное приложение</h3>
+                        <p>Кроссплатформенное приложение для управления задачами и командной работы.</p>
+                        <div class="project-tags">
+                            <span class="tag">Flutter</span>
+                            <span class="tag">Firebase</span>
+                        </div>
+                        <a href="#" class="project-link">Подробнее →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skills">
+                <div class="section-title">⚡ Навыки и технологии</div>
+                <div class="skills-list">
+                    <span class="skill-item">UI/UX Дизайн</span>
+                    <span class="skill-item">Figma</span>
+                    <span class="skill-item">React</span>
+                    <span class="skill-item">TypeScript</span>
+                    <span class="skill-item">Node.js</span>
+                    <span class="skill-item">Python</span>
+                    <span class="skill-item">Tailwind CSS</span>
+                    <span class="skill-item">Adobe XD</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладка 2: Лендинг портфолио сообщества -->
+    <div id="all-portfolios" class="tab-content">
+        <div class="container">
+            <div class="hero">
+                <h2>✨ Откройте мир творчества</h2>
+                <p>Более 100+ талантливых дизайнеров и разработчиков делятся своими работами</p>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Поиск по имени или навыкам...">
+                    <button id="searchBtn">Найти</button>
+                </div>
+            </div>
+
+            <div id="portfoliosContainer" class="portfolio-grid">
+                <!-- Пользователи будут загружены через JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 Портфолио сообщества. Все права защищены.</p>
+        <p style="margin-top: 10px; font-size: 12px;">Платформа для демонстрации творческих работ</p>
+    </div>
+
+    <script>
+        // Данные пользователей (лендинг портфолио)
+        const usersData = [
+            {
+                id: 1,
+                name: "Екатерина Волкова",
+                profession: "Product Designer",
+                bio: "Дизайнер продукта с фокусом на пользовательский опыт. Работала с крупными финтех-компаниями.",
+                avatar: "🎨",
+                skills: ["Figma", "Research", "Prototyping"],
+                projects: 24,
+                experience: "6 лет"
+            },
+            {
+                id: 2,
+                name: "Дмитрий Морозов",
+                profession: "Full Stack Developer",
+                bio: "Разрабатываю сложные веб-приложения на React и Node.js. Люблю чистый код и оптимальные решения.",
+                avatar: "💻",
+                skills: ["React", "Node.js", "PostgreSQL"],
+                projects: 56,
+                experience: "7 лет"
+            },
+            {
+                id: 3,
+                name: "Анна Смирнова",
+                profession: "UX/UI Designer",
+                bio: "Создаю интуитивно понятные интерфейсы для мобильных приложений и веб-сервисов.",
+                avatar: "🎯",
+                skills: ["Figma", "Adobe XD", "User Flow"],
+                projects: 32,
+                experience: "4 года"
+            },
+            {
+                id: 4,
+                name: "Максим Кузнецов",
+                profession: "Mobile Developer",
+                bio: "Разработка нативных iOS и Android приложений. Имею опыт в финтехе и e-commerce.",
+                avatar: "📱",
+                skills: ["Swift", "Kotlin", "Flutter"],
+                projects: 18,
+                experience: "5 лет"
+            },
+            {
+                id: 5,
+                name: "Ольга Новикова",
+                profession: "Motion Designer",
+                bio: "Создаю анимацию и динамические визуальные эффекты для рекламных роликов и цифровых продуктов.",
+                avatar: "🎬",
+                skills: ["After Effects", "Premiere Pro", "Cinema 4D"],
+                projects: 47,
+                experience: "8 лет"
+            },
+            {
+                id: 6,
+                name: "Артём Белов",
+                profession: "Frontend Architect",
+                bio: "Строю масштабируемые фронтенд-архитектуры, преподаю React и TypeScript в онлайн-школе.",
+                avatar: "🏗️",
+                skills: ["TypeScript", "Next.js", "Redux"],
+                projects: 38,
+                experience: "9 лет"
+            },
+            {
+                id: 7,
+                name: "Мария Лебедева",
+                profession: "Graphic Designer",
+                bio: "Создаю узнаваемые бренды, логотипы и айдентику. Работала с международными брендами.",
+                avatar: "✏️",
+                skills: ["Illustrator", "Photoshop", "Branding"],
+                projects: 89,
+                experience: "10 лет"
+            },
+            {
+                id: 8,
+                name: "Сергей Павлов",
+                profession: "DevOps Engineer",
+                bio: "Автоматизация процессов, контейнеризация и облачные технологии (AWS, GCP).",
+                avatar: "⚙️",
+                skills: ["Docker", "K8s", "Terraform"],
+                projects: 21,
+                experience: "6 лет"
+            },
+            {
+                id: 9,
+                name: "Татьяна Соколова",
+                profession: "AR/VR Developer",
+                bio: "Разрабатываю иммерсивные решения с использованием дополненной и виртуальной реальности.",
+                avatar: "🥽",
+                skills: ["Unity", "Unreal", "3D Modeling"],
+                projects: 12,
+                experience: "3 года"
+            }
+        ];
+
+        let currentUsers = [...usersData];
+
+        // Рендер портфолио сообщества
+        function renderPortfolios(users) {
+            const container = document.getElementById('portfoliosContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; background: white; border-radius: 20px; grid-column: 1/-1;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">🔍</div>
+                        <h3 style="margin-bottom: 8px;">Ничего не найдено</h3>
+                        <p style="color: #718096;">Попробуйте изменить параметры поиска</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = users.map(user => `
+                <div class="portfolio-card">
+                    <div class="card-header">
+                        <div class="user-avatar">${user.avatar}</div>
+                        <div class="user-name">${user.name}</div>
+                        <div class="user-profession">${user.profession}</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="user-bio">${user.bio}</div>
+                        <div class="user-skills">
+                            ${user.skills.map(skill => `<span>${skill}</span>`).join('')}
+                        </div>
+                        <div class="user-stats">
+                            <div class="user-stat">
+                                <div class="user-stat-value">${user.projects}</div>
+                                <div class="user-stat-label">проектов</div>
+                            </div>
+                            <div class="user-stat">
+                                <div class="user-stat-value">${user.experience}</div>
+                                <div class="user-stat-label">опыт</div>
+                            </div>
+                        </div>
+                        <a href="#" class="view-btn" onclick="alert('Портфолио пользователя ${user.name} (демо-режим)'); return false;">Смотреть работы →</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Поиск пользователей
+        function searchUsers(query) {
+            if (!query.trim()) {
+                currentUsers = [...usersData];
+            } else {
+                const lowerQuery = query.toLowerCase();
+                currentUsers = usersData.filter(user => 
+                    user.name.toLowerCase().includes(lowerQuery) ||
+                    user.profession.toLowerCase().includes(lowerQuery) ||
+                    user.skills.some(skill => skill.toLowerCase().includes(lowerQuery))
+                );
+            }
+            renderPortfolios(currentUsers);
+        }
+
+        // Переключение вкладок
+        function switchTab(tabId) {
+            // Скрыть все вкладки
+            document.getElementById('my-portfolio').classList.remove('active');
+            document.getElementById('all-portfolios').classList.remove('active');
+            
+            // Показать выбранную
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Рендер портфолио сообщества
+            renderPortfolios(usersData);
+            
+            // Обработчики вкладок
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabTarget = btn.getAttribute('data-tab');
+                    
+                    // Обновить активную кнопку
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Переключить контент
+                    if (tabTarget === 'my') {
+                        switchTab('my-portfolio');
+                    } else {
+                        switchTab('all-portfolios');
+                    }
+                });
+            });
+            
+            // Поиск
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            searchBtn.addEventListener('click', () => {
+                searchUsers(searchInput.value);
+            });
+            
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchUsers(searchInput.value);
+                }
+            });
+        });
+
+        // Предотвращение попыток регистрации (только просмотр)
+        console.log('Режим только для просмотра. Регистрация недоступна.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление аккаунтом</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            padding: 20px;
+        }
+        .navbar {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #667eea;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .info-label {
+            width: 120px;
+            font-weight: 600;
+            color: #555;
+        }
+        .info-value {
+            flex: 1;
+            color: #333;
+        }
+        .logout-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            text-align: center;
+        }
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; text-align: center; }
+            .nav-links a { margin: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>⚙️ Управление аккаунтом</h2>
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Главная</a>
+            <a href="{{ url_for('edit_portfolio') }}">Редактировать портфолио</a>
+            <a href="{{ url_for('view_my_portfolio') }}">Моё портфолио</a>
+            <a href="{{ url_for('logout') }}">Выход</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>👤 Информация об аккаунте</h1>
+            <div class="info-row">
+                <div class="info-label">ID:</div>
+                <div class="info-value">{{ user.id }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Имя пользователя:</div>
+                <div class="info-value">{{ user.username }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Email:</div>
+                <div class="info-value">{{ user.email }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Дата регистрации:</div>
+                <div class="info-value">{{ user.created_at }}</div>
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Выйти из аккаунта</a>
+        </div>
+    </div>
+</body>
+</html>

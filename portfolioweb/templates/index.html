@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Агрегатор портфолио - Главная</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f0f2f5;
+            padding: 8px 16px;
+            border-radius: 40px;
+        }
+
+        .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white !important;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .portfolio-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .portfolio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .card-avatar {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 15px;
+        }
+
+        .card-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-bio {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .card-skills span {
+            background: #f0f2f5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .card-projects {
+            color: #667eea;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .pagination a {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .pagination .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 20px;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .empty-state p {
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">🎨 PortfolioHub</div>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}">Главная</a>
+                <a href="{{ url_for('edit_portfolio') }}">Редактировать портфолио</a>
+                <a href="{{ url_for('view_my_portfolio') }}">Моё портфолио</a>
+                <a href="{{ url_for('account') }}">Аккаунт</a>
+                <div class="user-info">
+                    <div class="user-avatar-small">👤</div>
+                    <span class="username">{{ g.user.username }}</span>
+                    <a href="{{ url_for('logout') }}" class="logout-btn">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="hero">
+            <h1>✨ Откройте мир творчества</h1>
+            <p>Талантливые дизайнеры и разработчики делятся своими работами</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">{{ portfolios|length }}</div>
+                    <div class="stat-label">портфолио</div>
+                </div>
+            </div>
+        </div>
+
+        {% if portfolios %}
+        <div class="portfolio-grid">
+            {% for portfolio in portfolios %}
+            <div class="portfolio-card" onclick="window.location.href='{{ url_for('view_user_portfolio', user_id=portfolio.user_id) }}'">
+                <div class="card-header">
+                    <div class="card-avatar">{{ portfolio.avatar or '👤' }}</div>
+                    <div class="card-name">{{ portfolio.full_name or 'Пользователь' }}</div>
+                    <div class="card-bio">{{ (portfolio.short_info or 'Без описания')[:60] }}{% if portfolio.short_info and portfolio.short_info|length > 60 %}...{% endif %}</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-skills">
+                        {% set skills = portfolio.skills|from_json %}
+                        {% for skill in skills[:3] %}
+                        <span>⚡ {{ skill }}</span>
+                        {% endfor %}
+                        {% if skills|length > 3 %}
+                        <span>+{{ skills|length - 3 }}</span>
+                        {% endif %}
+                        {% if not skills %}
+                        <span>Навыки не добавлены</span>
+                        {% endif %}
+                    </div>
+                    <div class="card-projects">
+                        📁 {{ portfolio.projects|from_json|length }} проектов
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if has_prev %}
+            <a href="{{ url_for('index', page=page-1) }}">← Назад</a>
+            {% else %}
+            <a class="disabled">← Назад</a>
+            {% endif %}
+            
+            <span style="padding: 10px 20px;">Страница {{ page }}</span>
+            
+            {% if has_next %}
+            <a href="{{ url_for('index', page=page+1) }}">Вперед →</a>
+            {% else %}
+            <a class="disabled">Вперед →</a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <h3>😔 Пока нет публичных портфолио</h3>
+            <p>Станьте первым, кто поделится своими работами!</p>
+            <a href="{{ url_for('edit_portfolio') }}" style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 30px;">Создать портфолио</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
