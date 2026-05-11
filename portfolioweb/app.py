@@ -16,15 +16,13 @@ from database import (
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['DEBUG'] = True  # Включаем режим отладки
+app.config['DEBUG'] = True  
 
-# Инициализация всех БД
 init_auth_db()
 init_logs_db()
 init_portfolio_db()
 
 
-# Фильтр для Jinja2
 @app.template_filter('from_json')
 def from_json_filter(value):
     if not value:
@@ -45,7 +43,6 @@ def from_json_dict_filter(value):
         return {}
 
 
-# Декоратор проверки авторизации
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -75,7 +72,6 @@ def before_request():
             g.user = user
 
 
-# Ошибки
 @app.errorhandler(403)
 def forbidden(e):
     return render_template('403.html'), 403
@@ -126,8 +122,7 @@ def register():
         user_id = register_user(username, email, password)
         if user_id:
             log_action(user_id, username, 'REGISTER', 'SUCCESS')
-            
-            # Создаем портфолио для нового пользователя
+        
             empty_portfolio = {
                 'full_name': username,
                 'avatar': '👤',
