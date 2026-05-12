@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Редактирование портфолио</title>
     <style>
+        /* Ваши существующие стили */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -132,6 +133,21 @@
             margin: 4px;
             font-size: 12px;
         }
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .duplicate-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
         @media (max-width: 768px) {
             .container { grid-template-columns: 1fr; }
         }
@@ -150,6 +166,7 @@
 
     <div class="container">
         <div class="editor-panel">
+            <div id="duplicateWarning" class="duplicate-warning"></div>
             <form method="POST" id="portfolioForm">
                 <div class="form-group">
                     <label>ФИО</label>
@@ -176,13 +193,16 @@
                     <div id="projects-container">
                         {% set projects = portfolio.projects|from_json %}
                         {% for project in projects %}
+                        {% if project and project.strip() %}
                         <div class="project-item">
-                            <input type="text" name="projects[]" value="{{ project }}">
-                            <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+                            <input type="text" name="projects[]" value="{{ project }}" oninput="checkDuplicates()">
+                            <button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>
                         </div>
+                        {% endif %}
                         {% endfor %}
                     </div>
                     <button type="button" class="add-btn" onclick="addProject()">+ Добавить проект</button>
+                    <div class="error-message" id="projectsError"></div>
                 </div>
                 
                 <div class="form-group">
@@ -190,13 +210,16 @@
                     <div id="skills-container">
                         {% set skills = portfolio.skills|from_json %}
                         {% for skill in skills %}
+                        {% if skill and skill.strip() %}
                         <div class="skill-item">
-                            <input type="text" name="skills[]" value="{{ skill }}">
-                            <button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>
+                            <input type="text" name="skills[]" value="{{ skill }}" oninput="checkDuplicates()">
+                            <button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>
                         </div>
+                        {% endif %}
                         {% endfor %}
                     </div>
                     <button type="button" class="add-btn" onclick="addSkill()">+ Добавить навык</button>
+                    <div class="error-message" id="skillsError"></div>
                 </div>
                 
                 <div class="form-group">
@@ -238,16 +261,108 @@
             const container = document.getElementById('projects-container');
             const div = document.createElement('div');
             div.className = 'project-item';
-            div.innerHTML = '<input type="text" name="projects[]" placeholder="Название проекта"><button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>';
+            div.innerHTML = '<input type="text" name="projects[]" placeholder="Название проекта" oninput="checkDuplicates()"><button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>';
             container.appendChild(div);
+            updatePreview();
+            checkDuplicates();
         }
         
         function addSkill() {
             const container = document.getElementById('skills-container');
             const div = document.createElement('div');
             div.className = 'skill-item';
-            div.innerHTML = '<input type="text" name="skills[]" placeholder="Навык"><button type="button" class="remove-btn" onclick="this.parentElement.remove()">✕</button>';
+            div.innerHTML = '<input type="text" name="skills[]" placeholder="Навык" oninput="checkDuplicates()"><button type="button" class="remove-btn" onclick="removeItem(this)">✕</button>';
             container.appendChild(div);
+            updatePreview();
+            checkDuplicates();
+        }
+        
+        function removeItem(button) {
+            button.closest('.project-item, .skill-item').remove();
+            updatePreview();
+            checkDuplicates();
+        }
+        
+        function checkDuplicates() {
+            // Проверка дубликатов в проектах
+            const projects = Array.from(document.querySelectorAll('[name="projects[]"]'))
+                .map(i => i.value.trim())
+                .filter(v => v !== '');
+            
+            const uniqueProjects = [...new Set(projects)];
+            const projectsError = document.getElementById('projectsError');
+            
+            if (projects.length !== uniqueProjects.length) {
+                const duplicates = projects.filter((item, index) => projects.indexOf(item) !== index);
+                const uniqueDuplicates = [...new Set(duplicates)];
+                projectsError.textContent = `⚠️ Обнаружены дублирующиеся проекты: ${uniqueDuplicates.join(', ')}`;
+                projectsError.style.display = 'block';
+            } else {
+                projectsError.style.display = 'none';
+            }
+            
+            // Проверка дубликатов в навыках
+            const skills = Array.from(document.querySelectorAll('[name="skills[]"]'))
+                .map(i => i.value.trim())
+                .filter(v => v !== '');
+            
+            const uniqueSkills = [...new Set(skills)];
+            const skillsError = document.getElementById('skillsError');
+            
+            if (skills.length !== uniqueSkills.length) {
+                const duplicates = skills.filter((item, index) => skills.indexOf(item) !== index);
+                const uniqueDuplicates = [...new Set(duplicates)];
+                skillsError.textContent = `⚠️ Обнаружены дублирующиеся навыки: ${uniqueDuplicates.join(', ')}`;
+                skillsError.style.display = 'block';
+            } else {
+                skillsError.style.display = 'none';
+            }
+            
+            return (projects.length === uniqueProjects.length && skills.length === uniqueSkills.length);
+        }
+        
+        function cleanEmptyAndDuplicates() {
+            // Удаляем пустые проекты
+            const projects = document.querySelectorAll('[name="projects[]"]');
+            projects.forEach(input => {
+                if (!input.value.trim()) {
+                    input.closest('.project-item')?.remove();
+                }
+            });
+            
+            // Удаляем пустые навыки
+            const skills = document.querySelectorAll('[name="skills[]"]');
+            skills.forEach(input => {
+                if (!input.value.trim()) {
+                    input.closest('.skill-item')?.remove();
+                }
+            });
+            
+            // Удаляем дубликаты проектов (оставляем только первые вхождения)
+            const projectItems = document.querySelectorAll('.project-item');
+            const seenProjects = new Set();
+            projectItems.forEach(item => {
+                const input = item.querySelector('[name="projects[]"]');
+                const value = input.value.trim();
+                if (value && seenProjects.has(value)) {
+                    item.remove();
+                } else if (value) {
+                    seenProjects.add(value);
+                }
+            });
+            
+            // Удаляем дубликаты навыков
+            const skillItems = document.querySelectorAll('.skill-item');
+            const seenSkills = new Set();
+            skillItems.forEach(item => {
+                const input = item.querySelector('[name="skills[]"]');
+                const value = input.value.trim();
+                if (value && seenSkills.has(value)) {
+                    item.remove();
+                } else if (value) {
+                    seenSkills.add(value);
+                }
+            });
         }
         
         function updatePreview() {
@@ -256,15 +371,52 @@
             document.getElementById('previewShortInfo').innerText = document.getElementById('short_info').value || 'Краткая информация';
             document.getElementById('previewDetailedInfo').innerText = document.getElementById('detailed_info').value || 'Развернутая информация';
             
-            const projects = Array.from(document.querySelectorAll('[name="projects[]"]')).map(i => i.value).filter(v => v);
-            document.getElementById('previewProjects').innerHTML = projects.map(p => `<span>📌 ${p}</span>`).join('') || '<span>Нет проектов</span>';
+            const projects = Array.from(document.querySelectorAll('[name="projects[]"]'))
+                .map(i => i.value.trim())
+                .filter(v => v);
             
-            const skills = Array.from(document.querySelectorAll('[name="skills[]"]')).map(i => i.value).filter(v => v);
-            document.getElementById('previewSkills').innerHTML = skills.map(s => `<span>⚡ ${s}</span>`).join('') || '<span>Нет навыков</span>';
+            // Убираем дубликаты для предпросмотра
+            const uniqueProjects = [...new Set(projects)];
+            document.getElementById('previewProjects').innerHTML = uniqueProjects.map(p => `<span>📌 ${p}</span>`).join('') || '<span>Нет проектов</span>';
+            
+            const skills = Array.from(document.querySelectorAll('[name="skills[]"]'))
+                .map(i => i.value.trim())
+                .filter(v => v);
+            
+            const uniqueSkills = [...new Set(skills)];
+            document.getElementById('previewSkills').innerHTML = uniqueSkills.map(s => `<span>⚡ ${s}</span>`).join('') || '<span>Нет навыков</span>';
         }
         
-        document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updatePreview));
+        // Обработка отправки формы
+        document.getElementById('portfolioForm').addEventListener('submit', function(e) {
+            // Проверяем наличие дубликатов
+            if (!checkDuplicates()) {
+                e.preventDefault();
+                const warning = document.getElementById('duplicateWarning');
+                warning.textContent = '❌ Пожалуйста, устраните дублирующиеся проекты или навыки перед сохранением.';
+                warning.style.display = 'block';
+                setTimeout(() => {
+                    warning.style.display = 'none';
+                }, 3000);
+                return;
+            }
+            
+            // Очищаем пустые и дублирующиеся значения
+            cleanEmptyAndDuplicates();
+            updatePreview();
+        });
+        
+        // Обновление предпросмотра при любых изменениях
+        document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', function() {
+            updatePreview();
+            if (this.name === 'projects[]' || this.name === 'skills[]') {
+                checkDuplicates();
+            }
+        }));
+        
+        // Инициализация
         updatePreview();
+        checkDuplicates();
     </script>
 </body>
 </html>

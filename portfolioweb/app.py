@@ -16,7 +16,7 @@ from database import (
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
-app.config['DEBUG'] = True  
+app.config['DEBUG'] = True
 
 init_auth_db()
 init_logs_db()
@@ -82,7 +82,6 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-# Авторизация
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -122,7 +121,7 @@ def register():
         user_id = register_user(username, email, password)
         if user_id:
             log_action(user_id, username, 'REGISTER', 'SUCCESS')
-        
+            
             empty_portfolio = {
                 'full_name': username,
                 'avatar': '👤',
@@ -150,21 +149,17 @@ def logout():
     return redirect(url_for('login'))
 
 
-# Главная страница
 @app.route('/')
 @login_required
 def index():
-    # Получаем все публичные портфолио
     all_portfolios = get_all_public_portfolios()
     
-    # Исключаем текущего пользователя (не показываем своё портфолио на главной)
     other_portfolios = [p for p in all_portfolios if p['user_id'] != g.user['id']]
     
     print(f"[DEBUG] Текущий пользователь: {g.user['username']} (id={g.user['id']})")
     print(f"[DEBUG] Всего публичных портфолио: {len(all_portfolios)}")
     print(f"[DEBUG] Портфолио других пользователей: {len(other_portfolios)}")
     
-    # Пагинация
     page = request.args.get('page', 1, type=int)
     per_page = 9
     total = len(other_portfolios)
@@ -182,7 +177,6 @@ def index():
                            total_count=total)
 
 
-# Редактирование портфолио
 @app.route('/portfolio/edit', methods=['GET', 'POST'])
 @login_required
 def edit_portfolio():
@@ -217,7 +211,6 @@ def edit_portfolio():
     return render_template('portfolio_edit.html', portfolio=portfolio)
 
 
-# Просмотр своего портфолио
 @app.route('/portfolio/my')
 @login_required
 def view_my_portfolio():
@@ -226,7 +219,6 @@ def view_my_portfolio():
     return render_template('portfolio_view.html', portfolio=portfolio, is_owner=True)
 
 
-# Просмотр портфолио другого пользователя
 @app.route('/portfolio/user/<int:user_id>')
 @login_required
 def view_user_portfolio(user_id):
@@ -241,7 +233,6 @@ def view_user_portfolio(user_id):
     return render_template('user_view.html', portfolio=portfolio)
 
 
-# Управление аккаунтом
 @app.route('/account')
 @login_required
 def account():
